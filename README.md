@@ -16,4 +16,5 @@ Steps to reproduce results:
 References
 ==========
 
-1. [facebook/C3D](https://arxiv.org/abs/1412.0767)
+1. [Original C3D implementation in Caffe](https://github.com/facebook/C3D)
+2. [C3D paper](https://arxiv.org/abs/1412.0767)
