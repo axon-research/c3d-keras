@@ -11,7 +11,8 @@ Steps to reproduce results:
 4. Get protobuf that supports large enough `kDefaultTotalBytesLimit` as instructed in the [original gist](https://gist.github.com/albertomontesg/d8b21a179c1e6cca0480ebdf292c34d2). Version 3.0 or later should support this.
 5. Compile the caffe.proto file for python: `protoc --python_out=. caffe.proto`
 6. Convert the pre-trained model from Caffe format to Keras: `python convert_caffe_model.py`
-7. Run test: `python test_model.py`
+7. Download test video: `bash download_test_video.sh`
+8. Run test: `python test_model.py`
 
 References
 ==========
