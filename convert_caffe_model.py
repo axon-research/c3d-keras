@@ -6,18 +6,49 @@ import numpy as np
 import h5py
 import os
 
-# why needed?
-def rot90(W):
+def rot180(W):
     for i in range(W.shape[0]):
-        for j in range(W.shape[3]):
-            for k in range(W.shape[4]):
-                W[i, :, :, j, k] = np.rot90(W[i, :, :, j, k], 2)
+        for j in range(W.shape[1]):
+            for k in range(W.shape[2]):
+                W[i, j, k] = np.rot90(W[i, j, k])
+                W[i, j, k] = np.rot90(W[i, j, k])
     return W
+
+def reindex(x):
+    # https://github.com/fchollet/keras/blob/master/keras/utils/np_utils.py#L90-L115
+    # invert the last three axes
+    if x.ndim != 5:
+        print "[Error] Input to reindex must be 5D nparray."
+        return None
+
+    N = x.shape[0]
+    C = x.shape[1]
+    L = x.shape[2]
+    H = x.shape[3]
+    W = x.shape[4]
+    y = np.zeros_like(x)
+    for n in range(N):
+        for c in range(C):
+            for l in range(L):
+                for h in range(H):
+                    for w in range(W):
+                        y[n, c, l, h, w] = x[n, c,
+                                                   L - l - 1,
+                                                   H - h - 1,
+                                                   W - w - 1]
+    return y
 
 def main():
 
+    #dim_ordering = 'th'
+    #dim_ordering = 'th'
+    import keras.backend as K
+    dim_ordering = K._image_dim_ordering
+    print "[Info] image_dim_order (from default ~/.keras/keras.json)={}".format(
+            dim_ordering)
+
     # get C3D model placeholder
-    model = c3d_model.get_model(summary=True)
+    model = c3d_model.get_model(summary=True, backend=dim_ordering)
 
     # input caffe model
     caffe_model_filename = '/home/chuck/projects/c3d-tensorflow2/models/conv3d_deepnetA_sport1m_iter_1900000'
@@ -26,8 +57,8 @@ def main():
     model_dir = './models'
     if not os.path.exists(model_dir):
         os.makedirs(model_dir)
-    output_model_filename = os.path.join(model_dir, 'sports1M_weights.h5')
-    output_json_filename = os.path.join(model_dir, 'sports1M_weights.json')
+    output_model_filename = os.path.join(model_dir, 'sports1M_weights_{}.h5'.format(dim_ordering))
+    output_json_filename = os.path.join(model_dir, 'sports1M_weights_{}.json'.format(dim_ordering))
 
     # read caffe model
     print "-" * 19
@@ -54,14 +85,24 @@ def main():
             layer.blobs[0].height,
             layer.blobs[0].width,
             )
-        weights_p = np.transpose(weights_p, (2, 4, 3, 1, 0))
+        #print "[Debug] layer={}: (n,c,l,h,w)=({},{},{},{},{})".format(
+        #    layer.name,
+        #    layer.blobs[0].num,
+        #    layer.blobs[0].channels,
+        #    layer.blobs[0].length,
+        #    layer.blobs[0].height,
+        #    layer.blobs[0].width,
+        #    )
         if 'conv' in layer.name:
-            #pass
-            # why rot90 twice?
-            weights_p = rot90(weights_p)
+            # theano vs tensorflow: https://github.com/fchollet/keras/blob/master/keras/utils/np_utils.py#L90-L115
+            if dim_ordering == 'th':
+                # why rotate 180?: https://github.com/fchollet/keras/pull/1669/files#diff-388f0221aadc8371ae8d37e990ee026aR439
+                #weights_p = rot180(weights_p)
+                weights_p = reindex(weights_p)
+            else:
+                weights_p = np.transpose(weights_p, (2, 3, 4, 1, 0))
         elif 'fc' in layer.name:
-            #weights_p = weights_p[0, 0, 0, :, :].T
-            weights_p = np.squeeze(weights_p)
+            weights_p = weights_p[0, 0, 0, :, :].T
         params.append([weights_p, weights_b])
 
     valid_layer_count = 0
