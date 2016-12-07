@@ -6,11 +6,19 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import c3d_model
+import sys
+import keras.backend as K
+dim_ordering = K._image_dim_ordering
+print "[Info] image_dim_order (from default ~/.keras/keras.json)={}".format(
+        dim_ordering)
+backend = dim_ordering
 
 def diagnose(data, verbose=True, label='input', plots=False, backend='tf'):
     if backend == 'th':
         data = np.transpose(data, (1, 2, 3, 0))
-    min_num_spatial_axes = 20
+    #else:
+    #    data = np.transpose(data, (0, 2, 1, 3))
+    min_num_spatial_axes = 10
     max_outputs_to_show = 3
     ndim = data.ndim
     print "[Info] {}.ndim={}".format(label, ndim)
@@ -91,25 +99,34 @@ def diagnose(data, verbose=True, label='input', plots=False, backend='tf'):
     return
 
 def main():
-    backend = 'tf'
-
     show_images = False
+    diagnose_plots = False
     model_dir = './models'
+    global backend
+
+    # override backend if provided as an input arg
+    if len(sys.argv) > 1:
+        if 'tf' in sys.argv[1].lower():
+            backend = 'tf'
+        else:
+            backend = 'th'
+    print "[Info] Using backend={}".format(backend)
+
     if backend == 'th':
-        model_weight_filename = os.path.join(model_dir, 'sports1M_weights_albertomontesg.h5')
-        model_json_filename = os.path.join(model_dir, 'sports1M_weights_albertomontesg.json')
+        model_weight_filename = os.path.join(model_dir, 'sports1M_weights_th.h5')
+        model_json_filename = os.path.join(model_dir, 'sports1M_weights_th.json')
     else:
         model_weight_filename = os.path.join(model_dir, 'sports1M_weights_tf.h5')
-        model_json_filename = os.path.join(model_dir, 'sports1M_weights.json')
+        model_json_filename = os.path.join(model_dir, 'sports1M_weights_tf.json')
 
-    #model = model_from_json(open(model_json_filename, 'r').read())
-    model = c3d_model.get_model(backend=backend)
+    model = model_from_json(open(model_json_filename, 'r').read())
+    #model = c3d_model.get_model(backend=backend)
 
     # visualize model
-    model_img_filename = os.path.join('model_dir', 'c3d_model.png')
+    model_img_filename = os.path.join(model_dir, 'c3d_model.png')
     if not os.path.exists(model_img_filename):
         from keras.utils.visualize_util import plot
-        plot(model, to_file='model.png')
+        plot(model, to_file=model_img_filename)
 
     model.load_weights(model_weight_filename)
     model.compile(loss='mean_squared_error', optimizer='sgd')
@@ -144,27 +161,28 @@ def main():
     diagnose(X, verbose=True, label='Mean-subtracted X', plots=show_images)
 
     # center crop
-    X = X[:, 8:120, 30:142, :]
+    X = X[:, 8:120, 30:142, :] # (l, h, w, c)
     diagnose(X, verbose=True, label='Center-cropped X', plots=show_images)
 
     if backend == 'th':
-        X = np.transpose(X, (3, 0, 1, 2))
+        X = np.transpose(X, (3, 0, 1, 2)) # input_shape = (3,16,112,112)
     else:
-        # swap H, W
-        #X = np.transpose(X, (0, 2, 1, 3))
-        #diagnose(X, verbose=True, label='(h,w) swapped X', plots=show_images)
-        pass
+        pass                              # input_shape = (16,112,112,3)
 
-    '''
     # get activations for intermediate layers
     inspect_layers = [
-        'conv1',
-        'pool1',
-        'conv2',
-        'pool2',
-        'conv3a',
-        'conv3b',
+#        'conv1',
+#        'pool1',
+#        'conv2',
+#        'pool2',
+#        'conv3a',
+#        'conv3b',
         'pool3',
+        'conv4a',
+#        'conv4b',
+#        'pool4',
+#        'conv5b',
+#        'pool5',
         ]
     for layer in inspect_layers:
         int_model = c3d_model.get_int_model(model=model, layer=layer, backend=backend)
@@ -174,9 +192,8 @@ def main():
         diagnose(int_output,
                  verbose=True,
                  label='{} activation'.format(layer),
-                 plots=True,
+                 plots=diagnose_plots,
                  backend=backend)
-    '''
 
     # inference
     output = model.predict_on_batch(np.array([X]))
