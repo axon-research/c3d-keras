@@ -71,7 +71,8 @@ def get_model(summary=False, backend='tf'):
     # FC layers group
     model.add(Dense(4096, activation='relu', name='fc6'))
     model.add(Dropout(.5))
-    model.add(Dense(4096, name='fc7'))
+    model.add(Dense(4096, activation='relu', name='fc7'))
+    model.add(Dropout(.5))
     model.add(Dense(487, activation='softmax', name='fc8'))
 
     if summary:
@@ -163,9 +164,10 @@ def get_int_model(model, layer, backend='tf'):
     if layer == 'fc6':
         return int_model
     int_model.add(Dropout(.5))
-    int_model.add(Dense(4096, name='fc7'))
+    int_model.add(Dense(4096, activation='relu', name='fc7'))
     if layer == 'fc7':
         return int_model
+    int_model.add(Dropout(.5))
     int_model.add(Dense(487, activation='softmax', name='fc8'))
     if layer == 'fc8':
         return int_model
