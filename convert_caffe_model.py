@@ -51,7 +51,7 @@ def main():
     model = c3d_model.get_model(summary=True, backend=dim_ordering)
 
     # input caffe model
-    caffe_model_filename = '/home/chuck/projects/c3d-tensorflow2/models/conv3d_deepnetA_sport1m_iter_1900000'
+    caffe_model_filename = './models/conv3d_deepnetA_sport1m_iter_1900000'
 
     # output dir/files
     model_dir = './models'

@@ -14,6 +14,11 @@ Steps to reproduce results:
 7. Download test video: `bash download_test_video.sh`
 8. Run test: `python test_model.py`
 
+Issues
+======
+- Activation outputs begin to differ from `conv4a` layer for Theano and TensorFlow.
+- Theano results are correct, but TF results are off (from `conv4a` to the final layer).
+
 References
 ==========
 

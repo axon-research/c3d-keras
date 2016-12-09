@@ -171,18 +171,8 @@ def main():
 
     # get activations for intermediate layers
     inspect_layers = [
-#        'conv1',
-#        'pool1',
-#        'conv2',
-#        'pool2',
-#        'conv3a',
-#        'conv3b',
-        'pool3',
-        'conv4a',
-#        'conv4b',
-#        'pool4',
-#        'conv5b',
-#        'pool5',
+        'pool3',   # same results (TF vs TH) for ALL layers up to pool3
+        'conv4a',  # now, TH outputs are order of magnitude larger than TF ones
         ]
     for layer in inspect_layers:
         int_model = c3d_model.get_int_model(model=model, layer=layer, backend=backend)
