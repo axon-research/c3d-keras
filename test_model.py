@@ -14,76 +14,58 @@ print "[Info] image_dim_order (from default ~/.keras/keras.json)={}".format(
 backend = dim_ordering
 
 def diagnose(data, verbose=True, label='input', plots=False, backend='tf'):
-    if backend == 'th':
-        data = np.transpose(data, (1, 2, 3, 0))
-    #else:
-    #    data = np.transpose(data, (0, 2, 1, 3))
-    min_num_spatial_axes = 10
-    max_outputs_to_show = 3
-    ndim = data.ndim
-    print "[Info] {}.ndim={}".format(label, ndim)
-    print "[Info] {}.shape={}".format(label, data.shape)
-    for d in range(ndim):
-        num_this_dim = data.shape[d]
-        if num_this_dim >= min_num_spatial_axes: # check for spatial axes
-            # just first, center, last indices
-            range_this_dim = [0, num_this_dim/2, num_this_dim - 1]
-        else:
-            # sweep all indices for non-spatial axes
-            range_this_dim = range(num_this_dim)
-        for i in range_this_dim:
-            new_dim = tuple([d] + range(d) + range(d + 1, ndim))
-            sliced = np.transpose(data, new_dim)[i, ...]
-            print("[Info] {}, dim:{} {}-th slice: "
-                  "(min, max, mean, std)=({}, {}, {}, {})".format(
-                          label,
-                          d, i,
-                          np.min(sliced),
-                          np.max(sliced),
-                          np.mean(sliced),
-                          np.std(sliced)))
-    if plots:
-        # assume (l, h, w, c)-shaped input
-        if data.ndim != 4:
-            print("[Error] data (shape={}) is not 4-dim. Check data".format(
-                    data.shape))
-            return
-        l, h, w, c = data.shape
-        if l >= min_num_spatial_axes or \
-            h < min_num_spatial_axes or \
-            w < min_num_spatial_axes:
-            print("[Error] data (shape={}) does not look like in (l,h,w,c) "
-                  "format. Do reshape/transpose.".format(data.shape))
-            return
-        nrows = int(np.ceil(np.sqrt(data.shape[0])))
-        # BGR
-        if c == 3:
-            for i in range(l):
-                mng = plt.get_current_fig_manager()
-                mng.resize(*mng.window.maxsize())
-                plt.subplot(nrows, nrows, i + 1) # doh, one-based!
-                im = np.squeeze(data[i, ...]).astype(np.float32)
-                im = im[:, :, ::-1] # BGR to RGB
-                # force it to range [0,1]
-                im_min, im_max = im.min(), im.max()
-                if im_max > im_min:
-                    im_std = (im - im_min) / (im_max - im_min)
-                else:
-                    print "[Warning] image is constant!"
-                    im_std = np.zeros_like(im)
-                plt.imshow(im_std)
-                plt.axis('off')
-                plt.title("{}: t={}".format(label, i))
-            plt.show()
-            #plt.waitforbuttonpress()
-        else:
-            for j in range(min(c, max_outputs_to_show)):
+    # Convolution3D?
+    if data.ndim > 2:
+        if backend == 'th':
+            data = np.transpose(data, (1, 2, 3, 0))
+        #else:
+        #    data = np.transpose(data, (0, 2, 1, 3))
+        min_num_spatial_axes = 10
+        max_outputs_to_show = 3
+        ndim = data.ndim
+        print "[Info] {}.ndim={}".format(label, ndim)
+        print "[Info] {}.shape={}".format(label, data.shape)
+        for d in range(ndim):
+            num_this_dim = data.shape[d]
+            if num_this_dim >= min_num_spatial_axes: # check for spatial axes
+                # just first, center, last indices
+                range_this_dim = [0, num_this_dim/2, num_this_dim - 1]
+            else:
+                # sweep all indices for non-spatial axes
+                range_this_dim = range(num_this_dim)
+            for i in range_this_dim:
+                new_dim = tuple([d] + range(d) + range(d + 1, ndim))
+                sliced = np.transpose(data, new_dim)[i, ...]
+                print("[Info] {}, dim:{} {}-th slice: "
+                      "(min, max, mean, std)=({}, {}, {}, {})".format(
+                              label,
+                              d, i,
+                              np.min(sliced),
+                              np.max(sliced),
+                              np.mean(sliced),
+                              np.std(sliced)))
+        if plots:
+            # assume (l, h, w, c)-shaped input
+            if data.ndim != 4:
+                print("[Error] data (shape={}) is not 4-dim. Check data".format(
+                        data.shape))
+                return
+            l, h, w, c = data.shape
+            if l >= min_num_spatial_axes or \
+                h < min_num_spatial_axes or \
+                w < min_num_spatial_axes:
+                print("[Error] data (shape={}) does not look like in (l,h,w,c) "
+                      "format. Do reshape/transpose.".format(data.shape))
+                return
+            nrows = int(np.ceil(np.sqrt(data.shape[0])))
+            # BGR
+            if c == 3:
                 for i in range(l):
                     mng = plt.get_current_fig_manager()
                     mng.resize(*mng.window.maxsize())
                     plt.subplot(nrows, nrows, i + 1) # doh, one-based!
                     im = np.squeeze(data[i, ...]).astype(np.float32)
-                    im = im[:, :, j]
+                    im = im[:, :, ::-1] # BGR to RGB
                     # force it to range [0,1]
                     im_min, im_max = im.min(), im.max()
                     if im_max > im_min:
@@ -93,9 +75,38 @@ def diagnose(data, verbose=True, label='input', plots=False, backend='tf'):
                         im_std = np.zeros_like(im)
                     plt.imshow(im_std)
                     plt.axis('off')
-                    plt.title("{}: o={}, t={}".format(label, j, i))
+                    plt.title("{}: t={}".format(label, i))
                 plt.show()
                 #plt.waitforbuttonpress()
+            else:
+                for j in range(min(c, max_outputs_to_show)):
+                    for i in range(l):
+                        mng = plt.get_current_fig_manager()
+                        mng.resize(*mng.window.maxsize())
+                        plt.subplot(nrows, nrows, i + 1) # doh, one-based!
+                        im = np.squeeze(data[i, ...]).astype(np.float32)
+                        im = im[:, :, j]
+                        # force it to range [0,1]
+                        im_min, im_max = im.min(), im.max()
+                        if im_max > im_min:
+                            im_std = (im - im_min) / (im_max - im_min)
+                        else:
+                            print "[Warning] image is constant!"
+                            im_std = np.zeros_like(im)
+                        plt.imshow(im_std)
+                        plt.axis('off')
+                        plt.title("{}: o={}, t={}".format(label, j, i))
+                    plt.show()
+                    #plt.waitforbuttonpress()
+    elif data.ndim == 1:
+        print("[Info] {} (min, max, mean, std)=({}, {}, {}, {})".format(
+                      label,
+                      np.min(data),
+                      np.max(data),
+                      np.mean(data),
+                      np.std(data)))
+        print("[Info] data[:10]={}".format(data[:10]))
+
     return
 
 def main():
@@ -116,9 +127,11 @@ def main():
         model_weight_filename = os.path.join(model_dir, 'sports1M_weights_th.h5')
         model_json_filename = os.path.join(model_dir, 'sports1M_weights_th.json')
     else:
-        model_weight_filename = os.path.join(model_dir, 'sports1M_weights_tf.h5')
+        #model_weight_filename = os.path.join(model_dir, 'sports1M_weights_tf.h5')
+        model_weight_filename = os.path.join(model_dir, 'sports1M_weights_tf_converted_from_th.h5')
         model_json_filename = os.path.join(model_dir, 'sports1M_weights_tf.json')
 
+    print("[Info] Reading model architecture...")
     model = model_from_json(open(model_json_filename, 'r').read())
     #model = c3d_model.get_model(backend=backend)
 
@@ -128,13 +141,17 @@ def main():
         from keras.utils.visualize_util import plot
         plot(model, to_file=model_img_filename)
 
+    print("[Info] Loading model weights...")
     model.load_weights(model_weight_filename)
+    print("[Info] Loading model weights -- DONE!")
     model.compile(loss='mean_squared_error', optimizer='sgd')
 
+    print("[Info] Loading labels...")
     with open('sports1m/labels.txt', 'r') as f:
         labels = [line.strip() for line in f.readlines()]
     print('Total labels: {}'.format(len(labels)))
 
+    print("[Info] Loading a sample video...")
     cap = cv2.VideoCapture('dM06AMFLsrc.mp4')
     vid = []
     while True:
@@ -171,9 +188,16 @@ def main():
 
     # get activations for intermediate layers
     inspect_layers = [
-        'pool3',   # same results (TF vs TH) for ALL layers up to pool3
-        'conv4a',  # now, TH outputs are order of magnitude larger than TF ones
+    #    'pool5',
+        'fc6',
+        'fc7',
+    #    'fc8',
         ]
+
+    # small negative values after 'relu' activation in case of TH may be an
+    # issue?
+    # https://github.com/fchollet/keras/issues/2133
+
     for layer in inspect_layers:
         int_model = c3d_model.get_int_model(model=model, layer=layer, backend=backend)
         int_output = int_model.predict_on_batch(np.array([X]))

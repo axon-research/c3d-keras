@@ -93,10 +93,6 @@ def get_int_model(model, layer, backend='tf'):
                             border_mode='same', name='conv1',
                             input_shape=input_shape,
                             weights=model.layers[0].get_weights()))
-    print "[Debug] model.layers[0].get_weights()[0].shape={}".format(
-        model.layers[0].get_weights()[0].shape)
-    print "[Debug] model.layers[0].get_weights()[1].shape={}".format(
-        model.layers[0].get_weights()[1].shape)
     if layer == 'conv1':
         return int_model
     int_model.add(MaxPooling3D(pool_size=(1, 2, 2), strides=(1, 2, 2),
@@ -130,13 +126,16 @@ def get_int_model(model, layer, backend='tf'):
                            border_mode='valid', name='pool3'))
     if layer == 'pool3':
         return int_model
+
     # 4th layer group
     int_model.add(Convolution3D(512, 3, 3, 3, activation='relu',
-                            border_mode='same', name='conv4a'))
+                            border_mode='same', name='conv4a',
+                            weights=model.layers[7].get_weights()))
     if layer == 'conv4a':
         return int_model
     int_model.add(Convolution3D(512, 3, 3, 3, activation='relu',
-                            border_mode='same', name='conv4b'))
+                            border_mode='same', name='conv4b',
+                            weights=model.layers[8].get_weights()))
     if layer == 'conv4b':
         return int_model
     int_model.add(MaxPooling3D(pool_size=(2, 2, 2), strides=(2, 2, 2),
@@ -146,11 +145,13 @@ def get_int_model(model, layer, backend='tf'):
 
     # 5th layer group
     int_model.add(Convolution3D(512, 3, 3, 3, activation='relu',
-                            border_mode='same', name='conv5a'))
+                            border_mode='same', name='conv5a',
+                            weights=model.layers[10].get_weights()))
     if layer == 'conv5a':
         return int_model
     int_model.add(Convolution3D(512, 3, 3, 3, activation='relu',
-                            border_mode='same', name='conv5b'))
+                            border_mode='same', name='conv5b',
+                            weights=model.layers[11].get_weights()))
     if layer == 'conv5b':
         return int_model
     int_model.add(ZeroPadding3D(padding=(0, 1, 1), name='zeropad'))
@@ -158,17 +159,21 @@ def get_int_model(model, layer, backend='tf'):
                            border_mode='valid', name='pool5'))
     if layer == 'pool5':
         return int_model
+
     int_model.add(Flatten())
     # FC layers group
-    int_model.add(Dense(4096, activation='relu', name='fc6'))
+    int_model.add(Dense(4096, activation='relu', name='fc6',
+                            weights=model.layers[15].get_weights()))
     if layer == 'fc6':
         return int_model
     int_model.add(Dropout(.5))
-    int_model.add(Dense(4096, activation='relu', name='fc7'))
+    int_model.add(Dense(4096, activation='relu', name='fc7',
+                            weights=model.layers[17].get_weights()))
     if layer == 'fc7':
         return int_model
     int_model.add(Dropout(.5))
-    int_model.add(Dense(487, activation='softmax', name='fc8'))
+    int_model.add(Dense(487, activation='softmax', name='fc8',
+                            weights=model.layers[19].get_weights()))
     if layer == 'fc8':
         return int_model
 

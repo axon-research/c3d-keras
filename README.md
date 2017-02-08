@@ -14,10 +14,9 @@ Steps to reproduce results:
 7. Download test video: `bash download_test_video.sh`
 8. Run test: `python test_model.py`
 
-Issues
+Note
 ======
-- Activation outputs begin to differ from `conv4a` layer for Theano and TensorFlow.
-- Theano results are correct, but TF results are off (from `conv4a` to the final layer).
+- The first inner product (Dense) layer after Flatten layer needs to be massaged for TF dim-ordering.
 
 References
 ==========

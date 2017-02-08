@@ -41,24 +41,49 @@ def main():
     tf_model.load_weights('./models/sports1M_weights_tf.h5')
 
     # check weights for th_model vs tf_model
+    layer_count = 0
     for th_layer, tf_layer in zip(th_model.layers, tf_model.layers):
-       if th_layer.__class__.__name__ == 'Convolution3D':
-           th_kernel, th_bias = th_layer.get_weights()
-           if tf_layer.__class__.__name__ != 'Convolution3D':
-               print "[Panic] layer mismatch!"
-               sys.exit(-1)
-           tf_kernel, tf_bias = tf_layer.get_weights()
-           print "[Info] tf_kernel shape={}, th_kernel shape={}".format(
-                   tf_kernel.shape,
-                   th_kernel.shape)
-           th_to_tf = reindex(th_kernel)
-           th_to_tf = np.transpose(th_to_tf, (2, 3, 4, 1, 0))
-           delta = tf_kernel - th_to_tf
-           print "[Info] delta max,mean,min={},{},{}".format(
-                   np.max(delta),
-                   np.mean(delta),
-                   np.min(delta),
-                   )
+        #th_kernel, th_bias = th_layer.get_weights()
+        print("layer# {}: name={}".format(
+                layer_count,
+                th_layer.__class__.__name__
+                ))
+        layer_count += 1
+        if th_layer.__class__.__name__ == 'Convolution3D':
+            th_kernel, th_bias = th_layer.get_weights()
+            if tf_layer.__class__.__name__ != 'Convolution3D':
+                print "[Panic] layer mismatch!"
+                sys.exit(-1)
+            tf_kernel, tf_bias = tf_layer.get_weights()
+            print "[Info] Convolution3D: tf_kernel shape={}, th_kernel shape={}".format(
+                    tf_kernel.shape,
+                    th_kernel.shape)
+            th_to_tf = reindex(th_kernel)
+            th_to_tf = np.transpose(th_to_tf, (2, 3, 4, 1, 0))
+            delta = tf_kernel - th_to_tf
+            print "[Info] delta max,mean,min={},{},{}".format(
+                    np.max(delta),
+                    np.mean(delta),
+                    np.min(delta),
+                    )
+
+        if th_layer.__class__.__name__ == 'Dense':
+            th_kernel, th_bias = th_layer.get_weights()
+            if tf_layer.__class__.__name__ != 'Dense':
+                print "[Panic] layer mismatch!"
+                sys.exit(-1)
+            tf_kernel, tf_bias = tf_layer.get_weights()
+            print "[Info] Dense: tf_kernel shape={}, th_kernel shape={}".format(
+                    tf_kernel.shape,
+                    th_kernel.shape)
+            #th_to_tf = reindex(th_kernel)
+            #th_to_tf = np.transpose(th_to_tf, (2, 3, 4, 1, 0))
+            delta = tf_kernel - th_kernel
+            print "[Info] delta max,mean,min={},{},{}".format(
+                    np.max(delta),
+                    np.mean(delta),
+                    np.min(delta),
+                    )
 
 if __name__ == '__main__':
     main()
