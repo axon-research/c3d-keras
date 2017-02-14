@@ -14,7 +14,7 @@ echo ---------------------------------------------
 echo Downloading mean cube...
 wget \
   -nc \
-  https://github.com/facebook/C3D/raw/master/examples/c3d_finetuning/train01_16_128_171_mean.binaryproto \
+  https://github.com/chuckcho/c3d-tensorflow2/raw/master/models/train01_16_128_171_mean.npy \
   --directory-prefix=${DIR}
 
 echo ---------------------------------------------

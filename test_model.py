@@ -127,8 +127,7 @@ def main():
         model_weight_filename = os.path.join(model_dir, 'sports1M_weights_th.h5')
         model_json_filename = os.path.join(model_dir, 'sports1M_weights_th.json')
     else:
-        #model_weight_filename = os.path.join(model_dir, 'sports1M_weights_tf.h5')
-        model_weight_filename = os.path.join(model_dir, 'sports1M_weights_tf_converted_from_th.h5')
+        model_weight_filename = os.path.join(model_dir, 'sports1M_weights_tf.h5')
         model_json_filename = os.path.join(model_dir, 'sports1M_weights_tf.json')
 
     print("[Info] Reading model architecture...")
@@ -175,29 +174,22 @@ def main():
     mean_cube = np.transpose(mean_cube, (1, 2, 3, 0))
     #diagnose(mean_cube, verbose=True, label='Mean cube', plots=show_images)
     X -= mean_cube
-    diagnose(X, verbose=True, label='Mean-subtracted X', plots=show_images)
+    #diagnose(X, verbose=True, label='Mean-subtracted X', plots=show_images)
 
     # center crop
     X = X[:, 8:120, 30:142, :] # (l, h, w, c)
-    diagnose(X, verbose=True, label='Center-cropped X', plots=show_images)
+    #diagnose(X, verbose=True, label='Center-cropped X', plots=show_images)
 
     if backend == 'th':
         X = np.transpose(X, (3, 0, 1, 2)) # input_shape = (3,16,112,112)
     else:
         pass                              # input_shape = (16,112,112,3)
 
-    # get activations for intermediate layers
+    # get activations for intermediate layers if needed
     inspect_layers = [
-    #    'pool5',
-        'fc6',
-        'fc7',
-    #    'fc8',
+    #    'fc6',
+    #    'fc7',
         ]
-
-    # small negative values after 'relu' activation in case of TH may be an
-    # issue?
-    # https://github.com/fchollet/keras/issues/2133
-
     for layer in inspect_layers:
         int_model = c3d_model.get_int_model(model=model, layer=layer, backend=backend)
         int_output = int_model.predict_on_batch(np.array([X]))

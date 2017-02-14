@@ -38,6 +38,14 @@ def reindex(x):
                                                    W - w - 1]
     return y
 
+def convert_dense(w):
+    # kernel: (8192, 4096): (512x1x4x4, 4096) -> (1x4x4x512, 4096)
+    wo = np.zeros_like(w)
+    for i in range(w.shape[1]):
+        wi = np.squeeze(w[:,i])
+        wo[:,i] = np.transpose(np.reshape(wi, (512,4,4)), (1, 2, 0)).flatten()
+    return wo
+
 def main():
 
     #dim_ordering = 'th'
@@ -103,6 +111,10 @@ def main():
                 weights_p = np.transpose(weights_p, (2, 3, 4, 1, 0))
         elif 'fc' in layer.name:
             weights_p = weights_p[0, 0, 0, :, :].T
+            if 'fc6' in layer.name:
+                print("[Info] First FC layer after flattening layer needs "
+                      "special care...")
+                weights_p = convert_dense(weights_p)
         params.append([weights_p, weights_b])
 
     valid_layer_count = 0

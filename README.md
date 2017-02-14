@@ -14,6 +14,23 @@ Steps to reproduce results:
 7. Download test video: `bash download_test_video.sh`
 8. Run test: `python test_model.py`
 
+Results
+=======
+A following classification probability plot is expected. A peak at 367th class corresponds to `basketball` label.
+![classificatino probability plot] (classification_probability.png?raw=true "Classification Probability Plot")
+```
+Position of maximum probability: 367
+Maximum probability: 0.71422
+Corresponding label: basketball
+
+Top 5 probabilities and labels:
+basketball: 0.71422
+streetball: 0.10293
+volleyball: 0.04900
+greco-roman wrestling: 0.02638
+freestyle wrestling: 0.02408
+```
+
 Note
 ======
 - The first inner product (Dense) layer after Flatten layer needs to be massaged for TF dim-ordering.
