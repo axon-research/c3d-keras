@@ -6,14 +6,6 @@ import numpy as np
 import h5py
 import os
 
-def rot180(W):
-    for i in range(W.shape[0]):
-        for j in range(W.shape[1]):
-            for k in range(W.shape[2]):
-                W[i, j, k] = np.rot90(W[i, j, k])
-                W[i, j, k] = np.rot90(W[i, j, k])
-    return W
-
 def reindex(x):
     # https://github.com/fchollet/keras/blob/master/keras/utils/np_utils.py#L90-L115
     # invert the last three axes
@@ -93,19 +85,9 @@ def main():
             layer.blobs[0].height,
             layer.blobs[0].width,
             )
-        #print "[Debug] layer={}: (n,c,l,h,w)=({},{},{},{},{})".format(
-        #    layer.name,
-        #    layer.blobs[0].num,
-        #    layer.blobs[0].channels,
-        #    layer.blobs[0].length,
-        #    layer.blobs[0].height,
-        #    layer.blobs[0].width,
-        #    )
         if 'conv' in layer.name:
             # theano vs tensorflow: https://github.com/fchollet/keras/blob/master/keras/utils/np_utils.py#L90-L115
             if dim_ordering == 'th':
-                # why rotate 180?: https://github.com/fchollet/keras/pull/1669/files#diff-388f0221aadc8371ae8d37e990ee026aR439
-                #weights_p = rot180(weights_p)
                 weights_p = reindex(weights_p)
             else:
                 weights_p = np.transpose(weights_p, (2, 3, 4, 1, 0))
