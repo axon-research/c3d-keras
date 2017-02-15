@@ -13,24 +13,6 @@ def get_model(summary=False, backend='tf'):
     """ Return the Keras model of the network
     """
     model = Sequential()
-    # 1st layer group
-    # Note (https://keras.io/layers/convolutional/#convolution3d):
-    # keras.layers.convolutional.Convolution3D(nb_filter,
-    #                                          kernel_dim1,
-    #                                          kernel_dim2,
-    #                                          kernel_dim3,
-    #                                          init='glorot_uniform',
-    #                                          activation=None,
-    #                                          weights=None,
-    #                                          border_mode='valid',
-    #                                          subsample=(1, 1, 1),
-    #                                          dim_ordering='default',
-    #                                          W_regularizer=None,
-    #                                          b_regularizer=None,
-    #                                          activity_regularizer=None,
-    #                                          W_constraint=None,
-    #                                          b_constraint=None,
-    #                                          bias=True)
     if backend == 'tf':
         input_shape=(16, 112, 112, 3) # l, h, w, c
     else:

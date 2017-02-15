@@ -205,6 +205,8 @@ def main():
     output = model.predict_on_batch(np.array([X]))
 
     # show results
+    print('You will see a plot of class probabilities. Please close it, and '
+          'you\'ll see top 5 classification results.')
     plt.plot(output[0])
     plt.title('Probability')
     plt.show()
