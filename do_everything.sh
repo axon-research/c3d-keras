@@ -10,7 +10,7 @@ bash models/get_weights_and_mean.sh
 bash sports1m/get_labels.sh
 
 # get caffe.proto from facebook/C3D repo (thanks to Du Tran)
-wget -N https://raw.githubusercontent.com/facebook/C3D/master/src/caffe/proto/caffe.proto
+wget -N https://raw.githubusercontent.com/facebook/C3D/master/C3D-v1.0/src/caffe/proto/caffe.proto
 
 # protobuf combile caffe.proto
 if [ "$(which protoc 2> /dev/null)" ]; then

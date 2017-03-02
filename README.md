@@ -11,7 +11,7 @@ Or, run each of these steps:
 
 1. Download pretrained model: `bash models/get_weights_and_mean.sh`
 2. Download sport1mil labels: `bash sports1m/get_labels.sh`
-3. Download facebook/C3D `caffe.proto` file for conversion from caffe to Keras: `wget https://raw.githubusercontent.com/facebook/C3D/master/src/caffe/proto/caffe.proto`
+3. Download facebook/C3D `caffe.proto` file for conversion from caffe to Keras: `wget https://raw.githubusercontent.com/facebook/C3D/master/C3D-v1.0/src/caffe/proto/caffe.proto`
 4. Install protobuf per instruction in https://github.com/google/protobuf. In Ubuntu, `sudo apt-get install protobuf-compiler` will do.
 5. Compile the caffe.proto file for python: `protoc --python_out=. caffe.proto`
 6. Make sure the default keras config (in `~/.keras/keras.json`) has: `tf` image_dim_ordering, and `tensorflow` backend.
