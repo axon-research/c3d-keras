@@ -19,6 +19,19 @@ Or, run each of these steps:
 8. Download test video: `bash download_test_video.sh`
 9. Run test: `python test_model.py`
 
+Prerequisites
+=============
+Known to work with the following python packages:
+- Keras==1.2.0
+- tensorflow==0.12.1
+- h5py==2.6.0
+- numpy==1.12.0
+- cv2==3.1.0
+
+Some basic command-line tools:
+- [protobuf compiler](https://developers.google.com/protocol-buffers/docs/downloads)
+- wget
+
 Results
 =======
 A following classification probability plot is expected. A peak at 367th class (probability = 71%) corresponds to basketball label.
