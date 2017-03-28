@@ -11,6 +11,7 @@ RUN pip install -r c3d-keras/requirements.txt
 
 ADD models c3d-keras/models
 ADD sports1m c3d-keras/sports1m
+ADD data c3d-keras/data
 
 RUN \
   cd c3d-keras; \
