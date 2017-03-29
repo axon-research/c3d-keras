@@ -7,7 +7,14 @@ To reproduce results:
 
 - Run a script that does everything: `bash do_everything.sh`
 
-Or, run each of these steps:
+OR, build a docker image, which will do all the steps of replication
+during the build:
+
+```
+docker build -t c3d-keras .
+```
+
+OR, run each of these steps:
 
 1. Download pretrained model: `bash models/get_weights_and_mean.sh`
 2. Download sport1mil labels: `bash sports1m/get_labels.sh`
@@ -18,6 +25,7 @@ Or, run each of these steps:
 7. Convert the pre-trained model from Caffe format to Keras: `python convert_caffe_model.py`
 8. Download test video: `bash download_test_video.sh`
 9. Run test: `python test_model.py`
+
 
 Prerequisites
 =============
@@ -34,11 +42,11 @@ Some basic command-line tools:
 
 Results
 =======
-A following classification probability plot is expected. A peak at 367th class (probability = 71%) corresponds to basketball label.
+A following classification probability plot is expected (saved as `probabilities.png`). A peak at 367th class (probability = 71%) corresponds to basketball label.
 
 <img src="classification_probability.png" alt="Classification Probability Plot" width="50%">
 
-If you close the plot, top 5 labels will be repoted, which should look something like:
+The top 5 labels will also be reported, and should look something like:
 
 ```
 Position of maximum probability: 367
@@ -59,3 +67,9 @@ References
 1. [C3D Model for Keras](https://gist.github.com/albertomontesg/d8b21a179c1e6cca0480ebdf292c34d2)
 2. [Original C3D implementation in Caffe](https://github.com/facebook/C3D)
 3. [C3D paper](https://arxiv.org/abs/1412.0767)
+
+License
+=======
+
+ * Source code: 2-clause BSD.
+ * Data: various Creative Commons licenses. See [LICENSE.md](LICENSE.md) for details.

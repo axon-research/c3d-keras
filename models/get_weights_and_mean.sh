@@ -11,11 +11,9 @@ wget \
   --directory-prefix=${DIR}
 
 echo ---------------------------------------------
-echo Downloading mean cube...
-wget \
-  -N \
-  https://github.com/chuckcho/c3d-tensorflow2/raw/master/models/train01_16_128_171_mean.npy \
-  --directory-prefix=${DIR}
+echo Unpacking mean cube...
+cp data/train01_16_128_171_mean.npy.bz2 ${DIR}
+bunzip2 ${DIR}/train01_16_128_171_mean.npy.bz2
 
 echo ---------------------------------------------
 echo Done!

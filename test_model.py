@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import matplotlib
+matplotlib.use('Agg')
 from keras.models import model_from_json
 import os
 import cv2
@@ -205,11 +207,10 @@ def main():
     output = model.predict_on_batch(np.array([X]))
 
     # show results
-    print('You will see a plot of class probabilities. Please close it, and '
-          'you\'ll see top 5 classification results.')
+    print('Saving class probabilitities in probabilities.png')
     plt.plot(output[0])
     plt.title('Probability')
-    plt.show()
+    plt.savefig("probabilities.png")
     print('Position of maximum probability: {}'.format(output[0].argmax()))
     print('Maximum probability: {:.5f}'.format(max(output[0])))
     print('Corresponding label: {}'.format(labels[output[0].argmax()]))
