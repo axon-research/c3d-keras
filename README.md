@@ -26,7 +26,6 @@ OR, run each of these steps:
 8. Download test video: `bash download_test_video.sh`
 9. Run test: `python test_model.py`
 
-
 Prerequisites
 =============
 Known to work with the following python packages:
@@ -67,6 +66,10 @@ References
 1. [C3D Model for Keras](https://gist.github.com/albertomontesg/d8b21a179c1e6cca0480ebdf292c34d2)
 2. [Original C3D implementation in Caffe](https://github.com/facebook/C3D)
 3. [C3D paper](https://arxiv.org/abs/1412.0767)
+
+Comment / Feedback
+===================
+Feel free to contact Chuck Cho (cycho at taser.com) for any comment or feedback.
 
 License
 =======
