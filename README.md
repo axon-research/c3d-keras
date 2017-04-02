@@ -34,10 +34,13 @@ Known to work with the following python packages:
 - h5py==2.6.0
 - numpy==1.12.0
 - cv2==3.1.0
+- pydot==1.1.0
+- graphviz
 
 Some basic command-line tools:
 - [protobuf compiler](https://developers.google.com/protocol-buffers/docs/downloads)
 - wget
+- [youtube-dl](https://rg3.github.io/youtube-dl/)
 
 Results
 =======
