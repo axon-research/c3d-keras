@@ -72,7 +72,7 @@ References
 
 Comment / Feedback
 ===================
-Feel free to contact Chuck Cho (cycho at taser.com) for any comment or feedback.
+Feel free to contact Chuck Cho (cycho at axon.com) for any comment or feedback.
 
 License
 =======
