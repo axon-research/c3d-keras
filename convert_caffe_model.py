@@ -43,7 +43,7 @@ def main():
     #dim_ordering = 'th'
     #dim_ordering = 'th'
     import keras.backend as K
-    dim_ordering = K._image_dim_ordering
+    dim_ordering = K.image_dim_ordering()
     print "[Info] image_dim_order (from default ~/.keras/keras.json)={}".format(
             dim_ordering)
 

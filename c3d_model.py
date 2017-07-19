@@ -46,7 +46,7 @@ def get_model(summary=False, backend='tf'):
                             border_mode='same', name='conv5a'))
     model.add(Convolution3D(512, 3, 3, 3, activation='relu',
                             border_mode='same', name='conv5b'))
-    model.add(ZeroPadding3D(padding=(0, 1, 1), name='zeropad5'))
+    model.add(ZeroPadding3D(padding=((0, 0), (0, 1), (0, 1)), name='zeropad5'))
     model.add(MaxPooling3D(pool_size=(2, 2, 2), strides=(2, 2, 2),
                            border_mode='valid', name='pool5'))
     model.add(Flatten())

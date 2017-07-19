@@ -52,15 +52,15 @@ The top 5 labels will also be reported, and should look something like:
 
 ```
 Position of maximum probability: 367
-Maximum probability: 0.71422
+Maximum probability: 0.57953
 Corresponding label: basketball
 
 Top 5 probabilities and labels:
-basketball: 0.71422
-streetball: 0.10293
-volleyball: 0.04900
-greco-roman wrestling: 0.02638
-freestyle wrestling: 0.02408
+basketball: 0.57953
+volleyball: 0.14435
+streetball: 0.06718
+freestyle wrestling: 0.03323
+greco-roman wrestling: 0.03293
 ```
 
 References

@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import c3d_model
 import sys
 import keras.backend as K
-dim_ordering = K._image_dim_ordering
+dim_ordering = K.image_dim_ordering()
 print "[Info] image_dim_order (from default ~/.keras/keras.json)={}".format(
         dim_ordering)
 backend = dim_ordering
@@ -139,8 +139,8 @@ def main():
     # visualize model
     model_img_filename = os.path.join(model_dir, 'c3d_model.png')
     if not os.path.exists(model_img_filename):
-        from keras.utils.visualize_util import plot
-        plot(model, to_file=model_img_filename)
+        from keras.utils import plot_model
+        plot_model(model, to_file=model_img_filename)
 
     print("[Info] Loading model weights...")
     model.load_weights(model_weight_filename)
@@ -154,6 +154,7 @@ def main():
 
     print("[Info] Loading a sample video...")
     cap = cv2.VideoCapture('dM06AMFLsrc.mp4')
+
     vid = []
     while True:
         ret, img = cap.read()
