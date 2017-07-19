@@ -29,7 +29,7 @@ OR, run each of these steps:
 Prerequisites
 =============
 Known to work with the following python packages:
-- Keras==1.2.0
+- Keras==2.0.0
 - tensorflow==0.12.1
 - h5py==2.6.0
 - numpy==1.12.0
